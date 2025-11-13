@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "777037710203",
+    "project_id": "moviles-banano",
+    "storage_bucket": "moviles-banano.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:777037710203:android:b9090cbea85b17552473de",
+        "android_client_info": {
+          "package_name": "com.example.progra_movil"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAZW9ys0-ZHiwfJ5kl1lTt7mr7voFA_4kI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:777037710203:android:992f9f370c47384a2473de",
+        "android_client_info": {
+          "package_name": "com.example.wasaaaaa"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAZW9ys0-ZHiwfJ5kl1lTt7mr7voFA_4kI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
