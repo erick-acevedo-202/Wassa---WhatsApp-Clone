@@ -5,20 +5,32 @@ class ThemeSettings {
     final theme = ThemeData.light().copyWith(
       colorScheme: const ColorScheme(
         brightness: Brightness.light,
-        primary: Colors.white,
-        onPrimary: Colors.red,
-        secondary: Colors.redAccent,
+        primary: Colors.deepPurple, // Morado principal
+        onPrimary: Colors.white, // Texto sobre color primario
+        secondary: Colors.purpleAccent, // Morado claro
         onSecondary: Colors.white,
-        error: Colors.red,
+        error: Colors.redAccent,
         onError: Colors.white,
         background: Colors.white,
         onBackground: Colors.black87,
-        surface: Colors.grey,
+        surface: Colors.white,
         onSurface: Colors.black87,
       ),
       scaffoldBackgroundColor: Colors.white,
       appBarTheme: const AppBarTheme(
-        backgroundColor: Colors.red,
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.deepPurple,
+        elevation: 0,
+        centerTitle: true,
+      ),
+      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+        backgroundColor: Color.fromARGB(255, 248, 248, 248),
+        selectedItemColor: Colors.deepPurple,
+        unselectedItemColor: Colors.grey,
+        showUnselectedLabels: true,
+      ),
+      floatingActionButtonTheme: const FloatingActionButtonThemeData(
+        backgroundColor: Colors.deepPurple,
         foregroundColor: Colors.white,
       ),
     );
@@ -26,70 +38,36 @@ class ThemeSettings {
   }
 
   static ThemeData darkTheme() {
-    final theme = ThemeData.dark().copyWith(
+    final theme = ThemeData.dark(useMaterial3: true).copyWith(
       colorScheme: const ColorScheme(
         brightness: Brightness.dark,
-        primary: Colors.black,
-        onPrimary: Colors.lime,
-        secondary: Colors.limeAccent,
-        onSecondary: Colors.black,
-        error: Colors.redAccent,
-        onError: Colors.black,
-        background: Colors.black,
-        onBackground: Colors.limeAccent,
-        surface: Colors.grey,
-        onSurface: Colors.limeAccent,
-      ),
-      scaffoldBackgroundColor: Colors.black,
-      appBarTheme: const AppBarTheme(
-        backgroundColor: Colors.black,
-        foregroundColor: Colors.limeAccent,
-      ),
-    );
-    return theme;
-  }
-
-  static ThemeData p3lightTheme() {
-    final theme = ThemeData.light().copyWith(
-      colorScheme: const ColorScheme(
-        brightness: Brightness.light,
-        primary: Color(0xFF007BFF),
-        onPrimary: Colors.white,
-        secondary: Color(0xFFCCE6FF),
-        onSecondary: Colors.black,
+        primary: Colors.deepPurple, // Morado principal
+        onPrimary: Colors.white, // Texto sobre color primario
+        secondary: Colors.purpleAccent, // Morado claro
+        onSecondary: Colors.white,
         error: Colors.redAccent,
         onError: Colors.white,
-        surface: Color(0xFFF2F9FF),
-        onSurface: Colors.black87,
+        background: Color(0xFF121212), // Fondo oscuro tipo WhatsApp Dark
+        onBackground: Colors.white,
+        surface: Color(0xFF1E1E1E), // Superficie gris oscuro
+        onSurface: Colors.white,
       ),
-      scaffoldBackgroundColor: Color(0xFFF2F9FF),
+      scaffoldBackgroundColor: const Color(0xFF121212),
       appBarTheme: const AppBarTheme(
-        backgroundColor: Colors.white,
-        foregroundColor: Color(0xFF007BFF),
+        backgroundColor: Colors.deepPurple, // AppBar morado
+        foregroundColor: Colors.white, // Texto blanco
         elevation: 0,
+        centerTitle: true,
       ),
-    );
-    return theme;
-  }
-
-  static ThemeData p4AdminTheme() {
-    final theme = ThemeData.light().copyWith(
-      colorScheme: const ColorScheme(
-        brightness: Brightness.light,
-        primary: Color(0xFF007BFF),
-        onPrimary: Colors.white,
-        secondary: Color(0xFFCCE6FF),
-        onSecondary: Colors.black,
-        error: Colors.redAccent,
-        onError: Colors.white,
-        surface: Color(0xFFF2F2F2),
-        onSurface: Colors.black,
+      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+        backgroundColor: Color(0xFF1E1E1E),
+        selectedItemColor: Colors.purpleAccent,
+        unselectedItemColor: Colors.grey,
+        showUnselectedLabels: true,
       ),
-      scaffoldBackgroundColor: const Color(0xFFF2F2F2),
-      appBarTheme: const AppBarTheme(
-        backgroundColor: Colors.white,
-        foregroundColor: Color(0xFF007BFF),
-        elevation: 0,
+      floatingActionButtonTheme: const FloatingActionButtonThemeData(
+        backgroundColor: Colors.deepPurple,
+        foregroundColor: Colors.white,
       ),
     );
     return theme;
