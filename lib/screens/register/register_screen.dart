@@ -40,7 +40,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 15),
-
             Row(
               children: [
                 CountryCodePicker(
@@ -74,14 +73,12 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 ),
               ],
             ),
-
             SizedBox(height: 30),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: Theme.of(context).colorScheme.primary,
                 minimumSize: Size(200, 45),
               ),
-
               child: Text(
                 "Continuar",
                 style: TextStyle(
@@ -124,7 +121,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             ElevatedButton(
               child: Text("Cerrar"),
               onPressed: () {
-                print('ola');
                 Navigator.of(context).pop();
               },
             ),
@@ -140,9 +136,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       ),
                     ),
                     onPressed: () {
-                      ref
-                          .read(authControllerProvider)
-                          .singInWithNumber(
+                      ref.read(authControllerProvider).singInWithNumber(
                             context,
                             '$dialCode${conNumber.text}',
                           );
