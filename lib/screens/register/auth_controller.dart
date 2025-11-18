@@ -48,4 +48,8 @@ class AuthController {
   Future<UserDAO?> getUserData() async {
     return await authNumber.getUserData();
   }
+
+  Stream<UserDAO> streamUserData(String uid) {
+    return authNumber.streamUserData(uid);
+  }
 }

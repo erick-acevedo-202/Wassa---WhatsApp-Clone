@@ -30,10 +30,10 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: IndexedStack(index: _selectedScreen, children: _screens),
-      bottomNavigationBar: Navbar(
+      /*bottomNavigationBar: Navbar(
         selectedIndex: _selectedScreen,
         onTap: _onTap,
-      ),
+      ),*/
     );
   }
 }

@@ -62,10 +62,11 @@ class _ChatsMenuScreenState extends State<ChatsMenuScreen> {
       ),
       body: Center(child: Text('chats')),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        child: Icon(Icons.add),
+        onPressed: () {
+          Navigator.pushNamed(context, '/contacts');
+        },
+        child: const Icon(Icons.add_comment_rounded),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 }

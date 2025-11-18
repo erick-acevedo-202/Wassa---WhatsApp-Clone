@@ -140,6 +140,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                             context,
                             '$dialCode${conNumber.text}',
                           );
+
+                      //Navigator.pushNamed(context, '/chats_menu');
                     },
                   )
                 : SizedBox(),
