@@ -143,7 +143,7 @@ class AuthNumber {
       await firebase_firestore.collection('users').doc(uid).set(user.toMap());
 
       Navigator.of(dialogContext)
-          .pushNamedAndRemoveUntil('/home', (route) => false);
+          .pushNamedAndRemoveUntil('/chats', (route) => false);
     } catch (e) {
       showDialog(
         context: dialogContext,
