@@ -1,7 +1,12 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:wasaaaaa/firebaseStorage/firabase_storage_repo.dart';
+import 'package:wasaaaaa/models/userDAO.dart';
 
 final AuthNumberProvider = Provider((ref) {
   return AuthNumber(
@@ -28,6 +33,7 @@ class AuthNumber {
           showDialog(
             context: context,
             builder: (BuildContext context) {
+              print(e.toString());
               return AlertDialog(
                 title: Text('Error'),
                 content: SingleChildScrollView(
@@ -81,8 +87,6 @@ class AuthNumber {
       );
     }
   }
-<<<<<<< Updated upstream
-=======
 
   void verifyCode(
       {required BuildContext context,
@@ -182,5 +186,4 @@ class AuthNumber {
     }
     return null;
   }
->>>>>>> Stashed changes
 }

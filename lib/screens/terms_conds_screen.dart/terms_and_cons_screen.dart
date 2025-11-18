@@ -30,7 +30,6 @@ class TermsAndConsScreen extends StatelessWidget {
             Row(
               children: [
                 SizedBox(width: MediaQuery.of(context).size.width * 0.1),
-
                 Expanded(
                   child: RichText(
                     textAlign: TextAlign.center,
@@ -57,18 +56,25 @@ class TermsAndConsScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-
                 SizedBox(width: MediaQuery.of(context).size.width * 0.1),
               ],
             ),
             SizedBox(height: MediaQuery.of(context).size.height * .1),
-
             TextButton(
               onPressed: () {
                 Navigator.pushNamed(context, '/login');
               },
               child: Text(
                 'Acepto.',
+                style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/user_info');
+              },
+              child: Text(
+                'Brincar.',
                 style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
               ),
             ),
