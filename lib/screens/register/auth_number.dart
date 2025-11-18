@@ -113,6 +113,7 @@ class AuthNumber {
     try {
       if (firebase_auth.currentUser == null) {
         throw Exception("Usuario no autenticado");
+        //print("USUARIO NO AUTENTICADO");
       }
 
       String uid = firebase_auth.currentUser!.uid;
@@ -185,5 +186,14 @@ class AuthNumber {
       return UserDAO.fromMap(data.data()!);
     }
     return null;
+  }
+
+  Stream<UserDAO> streamUserData(String userId) {
+    print("AUTH NUMBER ${userId}");
+    return firebase_firestore.collection('users').doc(userId).snapshots().map(
+          (event) => UserDAO.fromMap(
+            event.data()!,
+          ),
+        );
   }
 }

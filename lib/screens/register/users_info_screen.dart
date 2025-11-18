@@ -175,6 +175,25 @@ class _UsersInfoScreenState extends ConsumerState<UsersInfoScreen> {
       },
     );
 
+    //TEMPORAL
+    final btnHome = ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        minimumSize: Size(200, 45),
+      ),
+      child: Text(
+        "Home",
+        style: TextStyle(
+          color: Theme.of(context).colorScheme.onPrimary,
+          fontSize: 20,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+      onPressed: () {
+        Navigator.pushReplacementNamed(context, '/home');
+      },
+    );
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Información del usuario'),
@@ -212,6 +231,7 @@ class _UsersInfoScreenState extends ConsumerState<UsersInfoScreen> {
               height: 15,
             ),
             btnSave,
+            btnHome
           ],
         ),
       )),

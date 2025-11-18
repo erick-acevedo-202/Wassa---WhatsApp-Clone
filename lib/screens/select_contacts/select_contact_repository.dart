@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wasaaaaa/components/utils.dart';
+import 'package:wasaaaaa/models/userDAO.dart';
+import 'package:wasaaaaa/screens/register/auth_controller.dart';
 
 final SelectContactRespositoryProvider = Provider(
   (ref) => SelectContactRespository(firestore: FirebaseFirestore.instance),
@@ -60,8 +62,11 @@ class SelectContactRespository {
             print('Phone NUmber: ${doc.data()['phoneNumber']}');
             print('---');
             if (selectedPhoneNum == doc.data()['phoneNumber']) {
+              var userData = UserDAO.fromMap(doc.data());
               isFound = true;
               print("USER FOUND");
+              print("IR AL CHAT");
+              Navigator.popAndPushNamed(context, '/chat', arguments: userData);
               break;
             }
           }
@@ -72,9 +77,6 @@ class SelectContactRespository {
       if (!isFound) {
         showSnackBar(
             context: context, content: 'Este número no tiene Wassa instalado');
-      } else {
-        print("IR AL CHAT");
-        Navigator.popAndPushNamed(context, '/chat');
       }
     } catch (e) {
       showSnackBar(context: context, content: e.toString());
