@@ -131,7 +131,7 @@ class AuthNumber {
 
       final user = UserDAO(
         uid: uid,
-        phoneNumber: firebase_auth.currentUser!.uid,
+        phoneNumber: firebase_auth.currentUser!.phoneNumber!,
         name: name,
         email: email,
         description: description ?? '',
@@ -174,10 +174,6 @@ class AuthNumber {
         .doc(firebase_auth.currentUser?.uid)
         .get();
     if (data.data() != null) {
-      print(">>> DATA FIRESTORE: ${data.data()}");
-      print(">>> groupId raw: ${data.data()?['groupId']}");
-      print(">>> groupId type: ${data.data()?['groupId']?.runtimeType}");
-
       return UserDAO.fromMap(data.data()!);
     }
     return null;

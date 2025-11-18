@@ -5,7 +5,7 @@ import 'package:wasaaaaa/screens/home/components/navbar.dart';
 import 'package:wasaaaaa/screens/states/states_menu_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
