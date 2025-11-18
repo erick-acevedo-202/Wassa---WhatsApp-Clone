@@ -81,4 +81,106 @@ class AuthNumber {
       );
     }
   }
+<<<<<<< Updated upstream
+=======
+
+  void verifyCode(
+      {required BuildContext context,
+      required String code,
+      required String verId}) async {
+    try {
+      PhoneAuthCredential credential =
+          PhoneAuthProvider.credential(verificationId: verId, smsCode: code);
+      await firebase_auth.signInWithCredential(credential);
+      Navigator.pushReplacementNamed(context, "/user_info");
+    } catch (e) {}
+  }
+
+  void saveUserInfo({
+    required BuildContext context,
+    required String name,
+    required String email,
+    required File? image,
+    required String? description,
+    required Ref ref,
+  }) async {
+    final dialogContext = Navigator.of(context, rootNavigator: true).context;
+
+    try {
+      if (firebase_auth.currentUser == null) {
+        throw Exception("Usuario no autenticado");
+      }
+
+      String uid = firebase_auth.currentUser!.uid;
+
+      String default_photo_URL =
+          'https://c8.alamy.com/comp/2WWHMDK/hand-drawn-lynx-head-retro-realistic-animal-isolated-vintage-style-doodle-line-graphic-design-black-and-white-drawing-mammal-vector-illustration-2WWHMDK.jpg';
+
+      String? profile_photo_URL;
+
+      if (image != null) {
+        profile_photo_URL =
+            await ref.read(FirabaseStorageRepoProvider).storeFile(
+                  ref:
+                      'image_profile/$uid/profile_${DateTime.now().millisecondsSinceEpoch}.jpg',
+                  file: image,
+                );
+      } else {
+        profile_photo_URL = default_photo_URL;
+      }
+
+      final user = UserDAO(
+        uid: uid,
+        phoneNumber: firebase_auth.currentUser!.phoneNumber!,
+        name: name,
+        email: email,
+        description: description ?? '',
+        isOnline: true,
+        profilePic: profile_photo_URL,
+        groupId: [],
+      );
+
+      await firebase_firestore.collection('users').doc(uid).set(user.toMap());
+
+      Navigator.of(dialogContext)
+          .pushNamedAndRemoveUntil('/home', (route) => false);
+    } catch (e) {
+      showDialog(
+        context: dialogContext,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Error'),
+            content: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [Text("Mensaje: ${e.toString()}")],
+              ),
+            ),
+            actions: [
+              ElevatedButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text("OK"),
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
+
+  Future<UserDAO?> getUserData() async {
+    var data = await firebase_firestore
+        .collection('users')
+        .doc(firebase_auth.currentUser?.uid)
+        .get();
+    if (data.data() != null) {
+      print(">>> DATA FIRESTORE: ${data.data()}");
+      print(">>> groupId raw: ${data.data()?['groupId']}");
+      print(">>> groupId type: ${data.data()?['groupId']?.runtimeType}");
+
+      return UserDAO.fromMap(data.data()!);
+    }
+    return null;
+  }
+>>>>>>> Stashed changes
 }

@@ -140,12 +140,18 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       ),
                     ),
                     onPressed: () {
+<<<<<<< Updated upstream
                       ref
                           .read(authControllerProvider)
                           .singInWithNumber(
+=======
+                      /*ref.read(authControllerProvider).singInWithNumber(
+>>>>>>> Stashed changes
                             context,
                             '$dialCode${conNumber.text}',
-                          );
+                          );*/
+
+                      Navigator.pushNamed(context, '/chats_menu');
                     },
                   )
                 : SizedBox(),

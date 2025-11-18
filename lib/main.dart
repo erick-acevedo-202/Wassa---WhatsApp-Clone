@@ -4,9 +4,20 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wasaaaaa/components/theme_settings.dart';
 import 'package:wasaaaaa/components/value_listener.dart';
 import 'package:wasaaaaa/firebase_options.dart';
+<<<<<<< Updated upstream
+=======
+import 'package:wasaaaaa/screens/chat/chat_screen.dart';
+import 'package:wasaaaaa/screens/errors/errores_screen.dart';
+import 'package:wasaaaaa/screens/chats_menu/chats_menu_screen.dart';
+>>>>>>> Stashed changes
 import 'package:wasaaaaa/screens/home/home_screen.dart';
 import 'package:wasaaaaa/screens/register/otp_screen.dart';
 import 'package:wasaaaaa/screens/register/register_screen.dart';
+<<<<<<< Updated upstream
+=======
+import 'package:wasaaaaa/screens/register/users_info_screen.dart';
+import 'package:wasaaaaa/screens/select_contacts/select_contact_screen.dart';
+>>>>>>> Stashed changes
 import 'package:wasaaaaa/screens/terms_conds_screen.dart/terms_and_cons_screen.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
@@ -37,6 +48,13 @@ class MyApp extends StatelessWidget {
             "/home": (context) => HomeScreen(),
             "/login": (context) => RegisterScreen(),
             "/otp": (context) => OtpScreen(),
+<<<<<<< Updated upstream
+=======
+            "/user_info": (context) => UsersInfoScreen(),
+            "/contacts": (context) => SelectContactScreen(),
+            "/chats_menu": (context) => ChatsMenuScreen(),
+            "/chat": (context) => ChatScreen()
+>>>>>>> Stashed changes
           },
           home: TermsAndConsScreen(),
         );
