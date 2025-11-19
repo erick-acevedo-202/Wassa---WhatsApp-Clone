@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wasaaaaa/components/error.dart';
 import 'package:wasaaaaa/components/loader.dart';
-import 'package:wasaaaaa/models/userDAO.dart';
+import 'package:wasaaaaa/screens/chat/chat_field_widget.dart';
 import 'package:wasaaaaa/screens/register/auth_controller.dart';
 
 class ChatScreen extends ConsumerWidget {
@@ -10,12 +10,14 @@ class ChatScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final user = ModalRoute.of(context)!.settings.arguments as UserDAO;
-
+    final args =
+        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    final String name = args['name'] ?? '';
+    final String uid = args['uid'] ?? '';
     return Scaffold(
       appBar: AppBar(
         title: StreamBuilder(
-          stream: ref.read(authControllerProvider).streamUserData(user.uid),
+          stream: ref.read(authControllerProvider).streamUserData(uid),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Loader();
@@ -27,14 +29,14 @@ class ChatScreen extends ConsumerWidget {
             }
             if (snapshot.data == null) {
               return ListTile(
-                title: Text(user.name),
+                title: Text(name),
                 subtitle: Text(""),
               );
             }
 
             final userData = snapshot.data!;
             return ListTile(
-              title: Text(user.name),
+              title: Text(name),
               subtitle: Text(userData.isOnline ? "Online" : "Offline"),
             );
           },
@@ -52,6 +54,14 @@ class ChatScreen extends ConsumerWidget {
             onPressed: () {},
             icon: const Icon(Icons.more_vert),
           ),
+        ],
+      ),
+      body: Column(
+        children: [
+          Expanded(child: Text('CHAT CONVERSATION')),
+          ChatFieldWidget(
+            receiverUserId: uid,
+          )
         ],
       ),
     );

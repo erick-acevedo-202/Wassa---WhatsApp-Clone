@@ -66,7 +66,8 @@ class SelectContactRespository {
               isFound = true;
               print("USER FOUND");
               print("IR AL CHAT");
-              Navigator.popAndPushNamed(context, '/chat', arguments: userData);
+              Navigator.popAndPushNamed(context, '/chat',
+                  arguments: {'name': userData.name, 'uid': userData.uid});
               break;
             }
           }
