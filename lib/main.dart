@@ -15,6 +15,7 @@ import 'package:wasaaaaa/screens/register/otp_screen.dart';
 import 'package:wasaaaaa/screens/register/register_screen.dart';
 import 'package:wasaaaaa/screens/register/users_info_screen.dart';
 import 'package:wasaaaaa/screens/states/states_add_screen.dart';
+import 'package:wasaaaaa/screens/states/states_from_you_screen.dart';
 import 'package:wasaaaaa/screens/states/states_menu_screen.dart';
 import 'package:wasaaaaa/screens/terms_conds_screen.dart/terms_and_cons_screen.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -48,6 +49,7 @@ class MyApp extends ConsumerWidget {
             "/states": (context) => StatesMenuScreen(),
             "/calls": (context) => CallsMenusCreen(),
             "/states_add": (context) => StatesAddScreen(),
+            "/states_from_you": (context) => StatesFromYouScreen(),
             "/login": (context) => RegisterScreen(),
             "/otp": (context) => OtpScreen(),
             "/user_info": (context) => UsersInfoScreen(),

@@ -47,6 +47,12 @@ dependencies:
   image_cropper: ^9.1.0
   firebase_storage: ^13.0.4
   file_picker: ^10.3.6
+  video_player: ^2.10.1
+  cached_network_image: ^3.4.1
+  flutter_contacts: ^1.1.9+2
+  http: ^1.1.0
+  path_provider: ^2.1.2
+  just_audio: ^0.10.5
 
 dev_dependencies:
   flutter_test:

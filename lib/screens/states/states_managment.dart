@@ -25,6 +25,7 @@ class StatesManagment {
     required BuildContext context,
     required String message,
     required String expiration,
+    required String? extension,
     File? media,
     required Ref ref,
   }) async {
@@ -35,7 +36,7 @@ class StatesManagment {
       if (media != null) {
         url_media = await ref.read(FirabaseStorageRepoProvider).storeFile(
             ref:
-                'image_profile/$uid/profile_${DateTime.now().millisecondsSinceEpoch}.jpg',
+                'states/$uid/profile_${DateTime.now().millisecondsSinceEpoch}.$extension',
             file: media);
       }
       final post = StateDAO(
@@ -70,6 +71,35 @@ class StatesManagment {
           );
         },
       );
+    }
+  }
+
+  Future<List<StateDAO>> getStatesForUser() async {
+    final now = DateTime.now().toIso8601String();
+
+    final query = await firebase_firestore
+        .collection('states')
+        .where('uid', isEqualTo: firebase_auth.currentUser?.uid)
+        .where('expiration', isGreaterThan: now)
+        .get();
+
+    if (query.docs.isEmpty) return [];
+
+    return query.docs.map((doc) {
+      final data = {
+        ...doc.data()!,
+        'id': doc.id,
+      };
+      print(data);
+      return StateDAO.fromMap(data);
+    }).toList();
+  }
+
+  Future<void> deleteState(StateDAO state) async {
+    try {
+      await firebase_firestore.collection('states').doc(state.id).delete();
+    } catch (e) {
+      print("Error deleting state: $e");
     }
   }
 }
