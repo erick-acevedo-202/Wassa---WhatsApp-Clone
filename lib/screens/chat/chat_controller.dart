@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:wasaaaaa/models/messageDAO.dart';
 import 'package:wasaaaaa/models/recent_chat_model.dart';
 import 'package:wasaaaaa/screens/chat/chat_repository.dart';
 import 'package:wasaaaaa/screens/register/auth_controller.dart';
@@ -35,5 +36,9 @@ class ChatController {
     print("GET RECENT CHAT CONTACTS");
     print(chatRepository.getChatContacts().first.toString());
     return chatRepository.getChatContacts();
+  }
+
+  Stream<List<MessageDAO>> getChatStream(String receiverUserId) {
+    return chatRepository.getChatStream(receiverUserId);
   }
 }

@@ -49,6 +49,8 @@ dependencies:
   file_picker: ^10.3.6
   flutter_contacts: ^1.1.9+2
   uuid: ^4.5.2
+  swipe_to: ^1.0.6
+  intl: ^0.20.2
 
 dev_dependencies:
   flutter_test:

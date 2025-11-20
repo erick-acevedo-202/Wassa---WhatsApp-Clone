@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wasaaaaa/components/error.dart';
 import 'package:wasaaaaa/components/loader.dart';
-import 'package:wasaaaaa/screens/chat/chat_field_widget.dart';
+import 'package:wasaaaaa/screens/chat/widgets/chat.dart';
+import 'package:wasaaaaa/screens/chat/widgets/chat_field_widget.dart';
 import 'package:wasaaaaa/screens/register/auth_controller.dart';
 
 class ChatScreen extends ConsumerWidget {
@@ -58,7 +59,7 @@ class ChatScreen extends ConsumerWidget {
       ),
       body: Column(
         children: [
-          Expanded(child: Text('CHAT CONVERSATION')),
+          Expanded(child: Chat(receiverUserId: uid)),
           ChatFieldWidget(
             receiverUserId: uid,
           )

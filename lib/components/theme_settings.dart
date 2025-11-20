@@ -16,6 +16,7 @@ class ThemeSettings {
         surface: Colors.white,
         onSurface: Colors.black87,
       ),
+      cardColor: Colors.grey[100],
       scaffoldBackgroundColor: Colors.white,
       appBarTheme: const AppBarTheme(
         backgroundColor: Colors.white,
@@ -53,6 +54,7 @@ class ThemeSettings {
         onSurface: Colors.white,
       ),
       scaffoldBackgroundColor: const Color(0xFF121212),
+      cardColor: const Color(0xFF2D2D2D),
       appBarTheme: const AppBarTheme(
         backgroundColor: Colors.deepPurple, // AppBar morado
         foregroundColor: Colors.white, // Texto blanco

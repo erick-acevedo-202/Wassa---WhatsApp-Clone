@@ -168,4 +168,24 @@ class ChatRepository {
       return contacts;
     });
   }
+
+  Stream<List<MessageDAO>> getChatStream(String receiverUserId) {
+    return firestore
+        .collection('users')
+        .doc(auth.currentUser!.uid)
+        .collection('chats')
+        .doc(receiverUserId)
+        .collection('messages')
+        .orderBy('timeSent')
+        .snapshots()
+        .map(
+      (event) {
+        List<MessageDAO> messages = [];
+        for (var doc in event.docs) {
+          messages.add(MessageDAO.fromMap(doc.data()));
+        }
+        return messages;
+      },
+    );
+  }
 }
