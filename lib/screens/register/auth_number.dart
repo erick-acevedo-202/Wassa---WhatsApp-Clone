@@ -111,6 +111,11 @@ class AuthNumber {
     final dialogContext = Navigator.of(context, rootNavigator: true).context;
 
     try {
+      if (firebase_auth.currentUser == null) {
+        throw Exception("Usuario no autenticado");
+        //print("USUARIO NO AUTENTICADO");
+      }
+
       String uid = firebase_auth.currentUser!.uid;
 
       String default_photo_URL =
@@ -174,8 +179,21 @@ class AuthNumber {
         .doc(firebase_auth.currentUser?.uid)
         .get();
     if (data.data() != null) {
+      print(">>> DATA FIRESTORE: ${data.data()}");
+      print(">>> groupId raw: ${data.data()?['groupId']}");
+      print(">>> groupId type: ${data.data()?['groupId']?.runtimeType}");
+
       return UserDAO.fromMap(data.data()!);
     }
     return null;
+  }
+
+  Stream<UserDAO> streamUserData(String userId) {
+    print("AUTH NUMBER ${userId}");
+    return firebase_firestore.collection('users').doc(userId).snapshots().map(
+          (event) => UserDAO.fromMap(
+            event.data()!,
+          ),
+        );
   }
 }

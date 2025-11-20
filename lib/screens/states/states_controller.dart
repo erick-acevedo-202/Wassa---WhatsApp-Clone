@@ -39,4 +39,8 @@ class StatesController {
   Future<void> deleteState(StateDAO state) async {
     return await statesManagment.deleteState(state);
   }
+
+  Stream<List<StateDAO>> getStatesForChatContacts() {
+    return statesManagment.getStatesForChatContacts();
+  }
 }

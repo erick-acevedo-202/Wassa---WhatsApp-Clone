@@ -4,7 +4,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wasaaaaa/components/theme_settings.dart';
 import 'package:wasaaaaa/components/value_listener.dart';
 import 'package:wasaaaaa/firebase_options.dart';
-import 'package:wasaaaaa/screens/calls_menu/calls_menus_creen.dart';
+import 'package:wasaaaaa/screens/calls/calls.dart';
+import 'package:wasaaaaa/screens/chat/chat_screen.dart';
+import 'package:wasaaaaa/screens/errors/errores_screen.dart';
+import 'package:wasaaaaa/screens/chats_menu/chats_menu_screen.dart';
+import 'package:wasaaaaa/screens/calls/calls_menus_creen.dart';
 import 'package:wasaaaaa/screens/chats_menu/chats_menu_screen.dart';
 import 'package:wasaaaaa/screens/config/config_screen.dart';
 import 'package:wasaaaaa/screens/errors/errores_screen.dart';
@@ -13,6 +17,8 @@ import 'package:wasaaaaa/screens/loading/loading_screen.dart';
 import 'package:wasaaaaa/screens/register/auth_controller.dart';
 import 'package:wasaaaaa/screens/register/otp_screen.dart';
 import 'package:wasaaaaa/screens/register/register_screen.dart';
+import 'package:wasaaaaa/screens/register/users_info_screen.dart';
+import 'package:wasaaaaa/screens/select_contacts/select_contact_screen.dart';
 import 'package:wasaaaaa/screens/register/users_info_screen.dart';
 import 'package:wasaaaaa/screens/states/states_add_screen.dart';
 import 'package:wasaaaaa/screens/states/states_from_you_screen.dart';
@@ -48,11 +54,15 @@ class MyApp extends ConsumerWidget {
             "/chats": (context) => ChatsMenuScreen(),
             "/states": (context) => StatesMenuScreen(),
             "/calls": (context) => CallsMenusCreen(),
+            "/call_now": (context) => CallsUsers(),
             "/states_add": (context) => StatesAddScreen(),
             "/states_from_you": (context) => StatesFromYouScreen(),
             "/login": (context) => RegisterScreen(),
             "/otp": (context) => OtpScreen(),
             "/user_info": (context) => UsersInfoScreen(),
+            "/contacts": (context) => SelectContactScreen(),
+            "/chats_menu": (context) => ChatsMenuScreen(),
+            "/chat": (context) => ChatScreen(),
             "/terms": (context) => TermsAndConsScreen(),
             "/error": (context) =>
                 ErrorScreen(errorMessage: "Error inesperado"),
