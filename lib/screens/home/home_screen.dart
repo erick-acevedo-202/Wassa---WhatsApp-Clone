@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:wasaaaaa/screens/calls_menu/calls_menus_creen.dart';
+import 'package:wasaaaaa/screens/calls/calls_menus_creen.dart';
 import 'package:wasaaaaa/screens/chats_menu/chats_menu_screen.dart';
 import 'package:wasaaaaa/screens/home/components/navbar.dart';
 import 'package:wasaaaaa/screens/states/states_menu_screen.dart';

@@ -15,6 +15,7 @@ class StatesAddScreen extends ConsumerStatefulWidget {
 class _StatesAddScreenState extends ConsumerState<StatesAddScreen> {
   TextEditingController conStory = TextEditingController();
   File? _media;
+  String? extension;
 
   bool get isValid {
     return conStory.text.isNotEmpty;
@@ -26,13 +27,26 @@ class _StatesAddScreenState extends ConsumerState<StatesAddScreen> {
       allowedExtensions: [
         'jpg', 'jpeg', 'png', 'gif', // imágenes
         'mp4', 'mov', 'avi', // videos
-        'mp3', 'wav', 'm4a', // música
+        'mp3', 'wav', 'm4a', 'flac', 'ogg', // música
       ],
     );
 
     if (result != null && result.files.single.path != null) {
+      final file = File(result.files.single.path!);
+
+      final ext = result.files.single.extension?.toLowerCase() ?? "";
+      const maxSize = 25 * 1024 * 1024;
+      final fileSize = await file.length();
+      if (fileSize > maxSize) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("El archivo supera los 25 MB")),
+        );
+        return;
+      }
+
       setState(() {
-        _media = File(result.files.single.path!);
+        _media = file;
+        extension = ext;
       });
     }
   }
@@ -43,7 +57,6 @@ class _StatesAddScreenState extends ConsumerState<StatesAddScreen> {
       controller: conStory,
       maxLines: 4,
       decoration: InputDecoration(
-        labelText: 'Escribe tu story',
         border: OutlineInputBorder(),
       ),
     );
@@ -52,11 +65,6 @@ class _StatesAddScreenState extends ConsumerState<StatesAddScreen> {
       onPressed: pickMedia,
       child:
           Text(_media != null ? 'Archivo seleccionado' : 'Seleccionar archivo'),
-    );
-
-    final txtResult = Text(
-      'Historia: ${conStory.text}\n'
-      'Archivo seleccionado: ${_media?.path ?? 'Ninguno'}',
     );
 
     final btnSave = ElevatedButton(
@@ -87,6 +95,9 @@ class _StatesAddScreenState extends ConsumerState<StatesAddScreen> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            SizedBox(
+              height: 15,
+            ),
             txtMessage,
             SizedBox(
               height: 15,
@@ -95,7 +106,6 @@ class _StatesAddScreenState extends ConsumerState<StatesAddScreen> {
             SizedBox(
               height: 15,
             ),
-            txtResult,
             SizedBox(
               height: 20,
             ),
@@ -113,18 +123,12 @@ class _StatesAddScreenState extends ConsumerState<StatesAddScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(validData ? 'Confirmar Story' : 'Revisa tu información'),
+          title: Text(isValid ? 'Confirmar Story' : 'Revisa tu información'),
           content: SingleChildScrollView(
-            child: validData
+            child: isValid
                 ? Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Revisa tu historia antes de continuar.'),
-                      SizedBox(height: 15),
-                      Text(
-                          'Historia: ${conStory.text.isEmpty ? "(vacío)" : conStory.text}'),
-                      SizedBox(height: 8),
-                      Text('Archivo: ${_media?.path ?? "(ninguno)"}'),
                       SizedBox(height: 20),
                       Text('¿Es correcta la información?'),
                     ],
@@ -142,8 +146,8 @@ class _StatesAddScreenState extends ConsumerState<StatesAddScreen> {
                 Navigator.of(context).pop();
               },
             ),
-            // Botón Aceptar SOLO si validData es true
-            validData
+            // Botón Aceptar SOLO si isValid es true
+            isValid
                 ? ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Theme.of(context).colorScheme.primary,
@@ -158,6 +162,7 @@ class _StatesAddScreenState extends ConsumerState<StatesAddScreen> {
                       ref.read(stateControllerProvider).createState(
                           context: context,
                           media: _media,
+                          extension: extension,
                           message: conStory.text,
                           expiration: DateTime.now()
                               .add(Duration(days: 1))

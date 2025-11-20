@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wasaaaaa/firebaseStorage/firabase_storage_repo.dart';
 import 'package:wasaaaaa/models/stateDAO.dart';
+import 'package:wasaaaaa/models/userDAO.dart';
 
 final StatesManagmentProvider = Provider((ref) {
   return StatesManagment(
@@ -25,6 +26,7 @@ class StatesManagment {
     required BuildContext context,
     required String message,
     required String expiration,
+    required String? extension,
     File? media,
     required Ref ref,
   }) async {
@@ -35,7 +37,7 @@ class StatesManagment {
       if (media != null) {
         url_media = await ref.read(FirabaseStorageRepoProvider).storeFile(
             ref:
-                'image_profile/$uid/profile_${DateTime.now().millisecondsSinceEpoch}.jpg',
+                'states/$uid/profile_${DateTime.now().millisecondsSinceEpoch}.$extension',
             file: media);
       }
       final post = StateDAO(
@@ -71,5 +73,90 @@ class StatesManagment {
         },
       );
     }
+  }
+
+  Future<List<StateDAO>> getStatesForUser() async {
+    final now = DateTime.now().toIso8601String();
+
+    final query = await firebase_firestore
+        .collection('states')
+        .where('uid', isEqualTo: firebase_auth.currentUser?.uid)
+        .where('expiration', isGreaterThan: now)
+        .get();
+
+    if (query.docs.isEmpty) return [];
+
+    return query.docs.map((doc) {
+      final data = {
+        ...doc.data(),
+        'id': doc.id,
+      };
+      print(data);
+      return StateDAO.fromMap(data);
+    }).toList();
+  }
+
+  Future<void> deleteState(StateDAO state) async {
+    try {
+      await firebase_firestore.collection('states').doc(state.id).delete();
+    } catch (e) {
+      print("Error deleting state: $e");
+    }
+  }
+
+  Stream<List<String>> getChatContactUIDs() {
+    return firebase_firestore
+        .collection('users')
+        .doc(firebase_auth.currentUser!.uid)
+        .collection('chats')
+        .snapshots()
+        .map((snapshot) {
+      return snapshot.docs
+          .map((doc) => doc.data()['contactId'] as String)
+          .toList();
+    });
+  }
+
+  Stream<List<StateDAO>> getStatesForChatContacts() {
+    return getChatContactUIDs().asyncMap((uids) async {
+      if (uids.isEmpty) return [];
+
+      final now = DateTime.now().toIso8601String();
+
+      // 1. obtener estados (solo una query)
+      final query = await firebase_firestore
+          .collection('states')
+          .where('expiration', isGreaterThan: now)
+          .get();
+
+      // convertir a StateDAO
+      final allStates = query.docs.map((doc) {
+        return StateDAO.fromMap({
+          ...doc.data(),
+          'id': doc.id,
+        });
+      }).toList();
+
+      // 2. filtrar por chats del usuario
+      final myStates =
+          allStates.where((state) => uids.contains(state.uid)).toList();
+
+      // 3. cargar la información del usuario para cada state
+      final withUser = await Future.wait(
+        myStates.map((state) async {
+          final snap =
+              await firebase_firestore.collection('users').doc(state.uid).get();
+
+          final data = snap.data();
+          if (data == null) return state;
+
+          final user = UserDAO.fromMap(data);
+
+          return state.copyWith(user: user);
+        }),
+      );
+
+      return withUser;
+    });
   }
 }
