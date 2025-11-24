@@ -56,4 +56,8 @@ class AuthController {
   void setUserStatus(bool isOnline) async {
     return authNumber.setUserStatus(isOnline);
   }
+
+  Future<String?> getUserNameById() async {
+    return await authNumber.getUserNameById();
+  }
 }

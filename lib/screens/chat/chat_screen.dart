@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wasaaaaa/components/error.dart';
 import 'package:wasaaaaa/components/loader.dart';
+import 'package:wasaaaaa/screens/calls/call_controller.dart';
 import 'package:wasaaaaa/screens/chat/widgets/chat.dart';
 import 'package:wasaaaaa/screens/chat/widgets/chat_field_widget.dart';
 import 'package:wasaaaaa/screens/register/auth_controller.dart';
@@ -93,7 +94,18 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
               ),
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () async {
+              final tokenU = await ref.read(callControllerProvider).createCall(
+                    context: context,
+                    calleeIds: [uid],
+                    name: name,
+                  );
+              Navigator.pushNamed(
+                context,
+                "/call_now",
+                arguments: tokenU,
+              );
+            },
             icon: const Icon(Icons.video_call_outlined),
           ),
           IconButton(
