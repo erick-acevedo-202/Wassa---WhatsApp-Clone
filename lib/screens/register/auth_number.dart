@@ -179,21 +179,29 @@ class AuthNumber {
         .doc(firebase_auth.currentUser?.uid)
         .get();
     if (data.data() != null) {
-      print(">>> DATA FIRESTORE: ${data.data()}");
-      print(">>> groupId raw: ${data.data()?['groupId']}");
-      print(">>> groupId type: ${data.data()?['groupId']?.runtimeType}");
-
       return UserDAO.fromMap(data.data()!);
     }
     return null;
   }
 
   Stream<UserDAO> streamUserData(String userId) {
-    print("AUTH NUMBER ${userId}");
     return firebase_firestore.collection('users').doc(userId).snapshots().map(
           (event) => UserDAO.fromMap(
             event.data()!,
           ),
         );
+  }
+
+  Future<String?> getUserNameById() async {
+    final uid = firebase_auth.currentUser?.uid;
+    var data = await firebase_firestore.collection('users').doc(uid).get();
+
+    if (data.exists && data.data() != null) {
+      print('olaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
+      print(data.data()!['name']);
+      return data.data()!['name'];
+    }
+
+    return null;
   }
 }
