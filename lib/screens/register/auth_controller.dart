@@ -52,4 +52,8 @@ class AuthController {
   Stream<UserDAO> streamUserData(String uid) {
     return authNumber.streamUserData(uid);
   }
+
+  void setUserStatus(bool isOnline) async {
+    return authNumber.setUserStatus(isOnline);
+  }
 }

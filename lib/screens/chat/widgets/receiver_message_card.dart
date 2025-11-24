@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:swipe_to/swipe_to.dart';
 import 'package:wasaaaaa/common/enums/message_enum.dart';
+import 'package:wasaaaaa/screens/chat/widgets/display_asset.dart';
 
 class ReceiverMessageCard extends StatelessWidget {
   const ReceiverMessageCard({
     Key? key,
     required this.message,
     required this.date,
-    this.type,
+    required this.type,
     this.onRightSwipe,
     this.repliedText,
     this.username,
@@ -15,7 +16,7 @@ class ReceiverMessageCard extends StatelessWidget {
   }) : super(key: key);
   final String message;
   final String date;
-  final MessageEnum? type;
+  final MessageEnum type;
   final GestureDragUpdateCallback? onRightSwipe;
   final String? repliedText;
   final String? username;
@@ -48,7 +49,9 @@ class ReceiverMessageCard extends StatelessWidget {
                     top: 5,
                     bottom: 20,
                   ),
-                  child: Text(message),
+                  child: type == MessageEnum.text
+                      ? Text(message)
+                      : DisplayAsset(message: message, type: type),
                 ),
                 /*Padding(
                   padding: type == MessageEnum.text

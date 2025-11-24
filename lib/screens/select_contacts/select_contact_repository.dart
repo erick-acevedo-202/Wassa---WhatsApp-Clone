@@ -83,4 +83,64 @@ class SelectContactRespository {
       showSnackBar(context: context, content: e.toString());
     }
   }
+
+  Future<List<Contact>> getAppContacts() async {
+    print("ENTRANDO EN GET APP CONTACTS");
+    // 1. Pedir permiso
+    if (!await FlutterContacts.requestPermission(readonly: true)) {
+      throw Exception("Permiso denegado");
+    }
+
+    final phoneContacts = await FlutterContacts.getContacts(
+      withProperties: true,
+      withThumbnail: false,
+    );
+
+    final List<String> phoneNumbers = phoneContacts
+        .where((c) => c.phones.isNotEmpty)
+        .map((c) =>
+            c.phones.first.number.replaceAll(' ', '')) // solo traer digitos
+        .toList();
+
+    if (phoneNumbers.isEmpty) return [];
+
+    print(phoneNumbers.toString());
+
+    // 2. Batches de máximo 30 (límite de whereIn en Firestore)
+    final List<List<String>> batches = [];
+    for (var i = 0; i < phoneNumbers.length; i += 30) {
+      batches.add(phoneNumbers.sublist(
+        i,
+        i + 30 > phoneNumbers.length ? phoneNumbers.length : i + 30,
+      ));
+    }
+
+    final Set<String> appUserPhones = {};
+
+    for (var batch in batches) {
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .where('phoneNumber', whereIn: batch)
+          .get();
+
+      for (var doc in querySnapshot.docs) {
+        final phone = doc.data()['phoneNumber'] as String?;
+        print("*****************************************");
+        print(phone);
+        if (phone != null) {
+          appUserPhones.add(phone.replaceAll(RegExp(r'\D'), '')); // normalizado
+        }
+      }
+    }
+
+    print(appUserPhones.toString());
+
+    // 3. Filtrar solo los que están en la app
+    return phoneContacts.where((contact) {
+      if (contact.phones.isEmpty) return false;
+      final cleanPhone =
+          contact.phones.first.number.replaceAll(RegExp(r'\D'), '');
+      return appUserPhones.contains(cleanPhone);
+    }).toList();
+  }
 }

@@ -1,5 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:wasaaaaa/common/enums/message_enum.dart';
+import 'package:wasaaaaa/models/groupDAO.dart';
 import 'package:wasaaaaa/models/messageDAO.dart';
 import 'package:wasaaaaa/models/recent_chat_model.dart';
 import 'package:wasaaaaa/screens/chat/chat_repository.dart';
@@ -22,13 +26,45 @@ class ChatController {
   });
 
   void sendTextMessage(
-      BuildContext context, String text, String receiverUserId) {
+      BuildContext context, String text, String receiverUserId, bool isGroup) {
     ref.read(userDataProvider).whenData(
           (value) => chatRepository.sendTextMessage(
               context: context,
               text: text,
               receiverUserId: receiverUserId,
-              senderUser: value!),
+              senderUser: value!,
+              isGroup: isGroup),
+        );
+  }
+
+  void sendFileMessage(BuildContext context, File file, String receiverUserId,
+      MessageEnum messageEnum, bool isGroup) {
+    ref.read(userDataProvider).whenData(
+          (value) => chatRepository.sendFileMessage(
+              context: context,
+              file: file,
+              receiverUserId: receiverUserId,
+              senderUser: value!,
+              messageEnum: messageEnum,
+              ref: ref,
+              isGroup: isGroup),
+        );
+  }
+
+  //
+  void sendGIFMessage(BuildContext context, String gifUrl,
+      String receiverUserId, MessageEnum messageEnum, bool isGroup) {
+    int gifUrlPartIndex = gifUrl.lastIndexOf('-') + 1;
+    String gifUrlPart = gifUrl.substring(gifUrlPartIndex);
+    String newgifUrl = 'https://i.giphy.com/media/$gifUrlPart/200.gif';
+
+    ref.read(userDataProvider).whenData(
+          (value) => chatRepository.sendGIFMessage(
+              context: context,
+              gifUrl: newgifUrl,
+              receiverUserId: receiverUserId,
+              senderUser: value!,
+              isGroup: isGroup),
         );
   }
 
@@ -38,7 +74,20 @@ class ChatController {
     return chatRepository.getChatContacts();
   }
 
+  Stream<List<GroupDAO>> getRecentChatGroups() {
+    return chatRepository.getChatGroups();
+  }
+
   Stream<List<MessageDAO>> getChatStream(String receiverUserId) {
     return chatRepository.getChatStream(receiverUserId);
+  }
+
+  Stream<List<MessageDAO>> getGroupChatStream(String groupId) {
+    return chatRepository.getGroupChatStream(groupId);
+  }
+
+  void setChatMessageSeen(
+      BuildContext context, String receiverUserId, String messageId) {
+    chatRepository.setChatMessageSeen(context, receiverUserId, messageId);
   }
 }

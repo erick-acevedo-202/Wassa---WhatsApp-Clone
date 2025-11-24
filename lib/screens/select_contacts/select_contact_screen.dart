@@ -107,26 +107,62 @@ class _SelectContactScreenState extends ConsumerState<SelectContactScreen> {
                 return const Center(child: Text("No se encontraron contactos"));
               }
 
-              return ListView.builder(
-                itemCount: filteredContacts.length,
-                itemBuilder: (context, index) {
-                  final contact = filteredContacts[index];
-                  return InkWell(
-                    onTap: () => selectContact(contact),
-                    child: ListTile(
-                      leading: contact.photo == null
-                          ? const CircleAvatar(child: Icon(Icons.person))
-                          : CircleAvatar(
-                              backgroundImage: MemoryImage(contact.photo!),
-                              radius: 30,
-                            ),
-                      title: Text(contact.displayName),
-                      subtitle: contact.phones.isNotEmpty
-                          ? Text(contact.phones[0].number)
-                          : null,
+              return Column(
+                children: [
+                  InkWell(
+                    onTap: () {
+                      print("Crear nuevo grupo");
+                      Navigator.pushNamed(context, '/create_group');
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(16),
+                      child: Row(
+                        children: [
+                          const CircleAvatar(
+                            radius: 24,
+                            child: Icon(Icons.group_add),
+                          ),
+                          const SizedBox(width: 16),
+                          Text(
+                            "Nuevo Grupo",
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                        ],
+                      ),
                     ),
-                  );
-                },
+                  ),
+                  const Divider(height: 1),
+                  Expanded(
+                    child: filteredContacts.isEmpty && _searchQuery.isNotEmpty
+                        ? const Center(
+                            child: Text("No se encontraron contactos"),
+                          )
+                        : ListView.builder(
+                            itemCount: filteredContacts.length,
+                            itemBuilder: (context, index) {
+                              final contact = filteredContacts[index];
+                              return InkWell(
+                                onTap: () => selectContact(contact),
+                                child: ListTile(
+                                  leading: contact.photo == null
+                                      ? const CircleAvatar(
+                                          child: Icon(Icons.person),
+                                        )
+                                      : CircleAvatar(
+                                          backgroundImage:
+                                              MemoryImage(contact.photo!),
+                                          radius: 30,
+                                        ),
+                                  title: Text(contact.displayName),
+                                  subtitle: contact.phones.isNotEmpty
+                                      ? Text(contact.phones[0].number)
+                                      : null,
+                                ),
+                              );
+                            },
+                          ),
+                  ),
+                ],
               );
             },
             error: (e, trace) => ErrorScreen(error: e.toString()),

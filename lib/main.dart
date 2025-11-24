@@ -12,6 +12,7 @@ import 'package:wasaaaaa/screens/calls/calls_menus_creen.dart';
 import 'package:wasaaaaa/screens/chats_menu/chats_menu_screen.dart';
 import 'package:wasaaaaa/screens/config/config_screen.dart';
 import 'package:wasaaaaa/screens/errors/errores_screen.dart';
+import 'package:wasaaaaa/screens/group/create_group_screen.dart';
 import 'package:wasaaaaa/screens/home/home_screen.dart';
 import 'package:wasaaaaa/screens/loading/loading_screen.dart';
 import 'package:wasaaaaa/screens/register/auth_controller.dart';
@@ -68,6 +69,7 @@ class MyApp extends ConsumerWidget {
                 ErrorScreen(errorMessage: "Error inesperado"),
             "/loading": (context) => LoadingScreen(),
             "/config": (context) => ConfigScreen(),
+            "/create_group": (context) => CreateGroupScreen()
           },
           //home: TermsAndConsScreen(),
           home: ref.watch(userDataProvider).when(data: (data) {

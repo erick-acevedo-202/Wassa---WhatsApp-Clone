@@ -196,4 +196,11 @@ class AuthNumber {
           ),
         );
   }
+
+  void setUserStatus(bool isOnline) async {
+    await firebase_firestore
+        .collection('users')
+        .doc(firebase_auth.currentUser!.uid)
+        .update({'isOnline': isOnline});
+  }
 }

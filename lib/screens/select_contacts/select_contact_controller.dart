@@ -3,6 +3,10 @@ import 'package:flutter_contacts/contact.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wasaaaaa/screens/select_contacts/select_contact_repository.dart';
 
+final groupContactsProvider = FutureProvider<List<Contact>>((ref) async {
+  return ref.watch(SelectContactRespositoryProvider).getAppContacts();
+});
+
 final getContactsProvider = FutureProvider(
   (ref) {
     final SelectContactRespository =
