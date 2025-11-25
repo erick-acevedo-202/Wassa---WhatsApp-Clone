@@ -17,7 +17,7 @@ class _StatesFromYouScreenState extends ConsumerState<StatesFromYouScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Tus historias'),
+        title: Text('Tus estados'),
       ),
       body: FutureBuilder<List<StateDAO>>(
         future: ref.read(stateControllerProvider).getStatesForUser(),
@@ -34,7 +34,7 @@ class _StatesFromYouScreenState extends ConsumerState<StatesFromYouScreen> {
           final states = snapshot.data ?? [];
 
           if (states.isEmpty) {
-            return Center(child: Text('No hay historias activas'));
+            return Center(child: Text('No hay estados activos'));
           }
 
           return ListView.builder(
@@ -100,9 +100,7 @@ class _StatesFromYouScreenState extends ConsumerState<StatesFromYouScreen> {
                     .read(stateControllerProvider)
                     .deleteState(state)
                     .then((onValue) {
-                  setState(() {
-                    print('hehcoi');
-                  });
+                  setState(() {});
                 });
               },
             ),

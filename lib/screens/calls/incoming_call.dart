@@ -15,40 +15,28 @@ class IncomingCallListener extends StatelessWidget {
     FirebaseAuth firebase_auth = FirebaseAuth.instance;
     final uid = firebase_auth.currentUser!.uid;
     if (uid == null) {
-      print('IncomingCallListener: no user logged');
       return child;
     }
-
-    print('IncomingCallListener: listening for calls for uid=$uid');
 
     return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
       stream:
           FirebaseFirestore.instance.collection('calls').doc(uid).snapshots(),
       builder: (context, snapshot) {
         // Logging completo
-        print('[IncomingCallListener] snapshot.hasData=${snapshot.hasData} '
-            'hasError=${snapshot.hasError} connection=${snapshot.connectionState}');
 
         if (snapshot.hasError) {
-          print('[IncomingCallListener] error: ${snapshot.error}');
           return child;
         }
 
         if (!snapshot.hasData) return child;
 
         final doc = snapshot.data!;
-        print(
-            '[IncomingCallListener] doc.exists=${doc.exists} data=${doc.data()}');
 
         if (!doc.exists || doc.data() == null) return child;
 
         final data = doc.data()!;
         final hasDialled = data['hasDialled'];
-        print('[IncomingCallListener] hasDialled=$hasDialled');
-
-        // Ajusta la condición según tu esquema (ej: hasDialled == false indica llamada entrante)
         if (hasDialled == false) {
-          // map a tu modelo de llamada si lo usas
           WidgetsBinding.instance.addPostFrameCallback((_) {
             Navigator.of(context).push(
               MaterialPageRoute(
@@ -57,7 +45,6 @@ class IncomingCallListener extends StatelessWidget {
               ),
             );
           });
-          // retorna child porque la pantalla la lanzamos manualmente
           return child;
         }
 
@@ -97,8 +84,6 @@ class IncomingCallDialog extends ConsumerWidget {
                   answer: "accepted",
                 );
             Navigator.pop(context);
-
-            // Aquí abres la pantalla de la llamada
           },
           child: const Text("Answer"),
         ),

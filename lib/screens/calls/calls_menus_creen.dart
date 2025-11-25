@@ -18,13 +18,6 @@ class _CallsMenusCreenState extends ConsumerState<CallsMenusCreen> {
       appBar: AppBar(
         centerTitle: false,
         title: Text('Llamadas'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.video_call),
-            tooltip: 'Llamar ahora',
-            onPressed: () {},
-          ),
-        ],
       ),
       body: Column(
         children: [
@@ -73,12 +66,8 @@ class _CallsMenusCreenState extends ConsumerState<CallsMenusCreen> {
                             ),
                           ),
                           const SizedBox(height: 8),
-
-                          Text("Estado: ${call.status}"),
-                          Text("De: $name"), // ← Aquí ya usamos el nombre real
-
+                          Text("De: $name"),
                           const SizedBox(height: 16),
-
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
