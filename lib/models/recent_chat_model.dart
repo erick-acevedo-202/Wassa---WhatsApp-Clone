@@ -4,6 +4,7 @@ class RecentChatModel {
   final String contactId;
   final DateTime timeSent;
   final String lastMessage;
+  final String lastMessageSenderId;
   bool isRead;
   int unreadCount;
   RecentChatModel(
@@ -12,6 +13,7 @@ class RecentChatModel {
       required this.contactId,
       required this.timeSent,
       required this.lastMessage,
+      required this.lastMessageSenderId,
       this.isRead = false,
       this.unreadCount = 0});
 
@@ -22,6 +24,7 @@ class RecentChatModel {
       'contactId': contactId,
       'timeSent': timeSent.millisecondsSinceEpoch,
       'lastMessage': lastMessage,
+      'lastMessageSenderId': lastMessageSenderId,
       'isRead': isRead,
       'unreadCount': unreadCount
     };
@@ -36,6 +39,7 @@ class RecentChatModel {
       contactId: map['contactId'] ?? '',
       timeSent: DateTime.fromMillisecondsSinceEpoch(map['timeSent']),
       lastMessage: map['lastMessage'] ?? '',
+      lastMessageSenderId: map['lastMessageSenderId'] ?? '',
       isRead: map['isRead'] ?? false,
       unreadCount: map['unreadCount'] is int ? map['unreadCount'] : 0,
     );

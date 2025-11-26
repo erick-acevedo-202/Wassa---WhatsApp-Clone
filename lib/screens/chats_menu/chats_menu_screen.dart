@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,28 +16,8 @@ class ChatsMenuScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    Widget _buildMessageStatus(bool isRead, int unreadCount) {
-      if (unreadCount > 0) {
-        // Mensajes sin leer - círculo con número
-        return Container(
-          width: 20,
-          height: 20,
-          decoration: BoxDecoration(
-            color: Colors.blue,
-            shape: BoxShape.circle,
-          ),
-          child: Center(
-            child: Text(
-              unreadCount.toString(),
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 10,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-        );
-      } else if (isRead) {
+    Widget _buildMessageStatus(bool isRead) {
+      if (isRead) {
         // Mensaje leído - doble check azul
         return Icon(
           Icons.done_all,
@@ -46,11 +27,80 @@ class ChatsMenuScreen extends ConsumerWidget {
       } else {
         // Mensaje enviado pero no leído - doble check gris
         return Icon(
-          Icons.done_all,
+          Icons.done,
           color: Colors.grey,
           size: 18,
         );
       }
+    }
+
+    Widget _buildUnreadBadge({
+      required bool isGroup,
+      required String chatId,
+      required bool isRead,
+      required String lastMessageSenderId,
+    }) {
+      final currentUserId = FirebaseAuth.instance.currentUser!.uid;
+      return StreamBuilder<int>(
+          stream: isGroup
+              ? ref
+                  .watch(chatControllerProvider)
+                  .getUnreadCountFromGroup(chatId)
+              : ref
+                  .watch(chatControllerProvider)
+                  .getUnreadCountFromUser(chatId),
+          builder: (context, snapshot) {
+            final count = snapshot.data ?? 0;
+            /*
+          print("=== STREAM DEBUG ===");
+          print("isGroup: $isGroup");
+          print("chatId: $chatId");
+          print("snapshot.connectionState: ${snapshot.connectionState}");
+          print("snapshot.hasData: ${snapshot.hasData}");
+          print("snapshot.data: ${snapshot.data}");
+          print("snapshot.error: ${snapshot.error}");
+          print("====================");*/
+
+            final wasLastMessageSentByMe = lastMessageSenderId == currentUserId;
+
+            if (count > 0) {
+              if (!wasLastMessageSentByMe) {
+                return Container(
+                  width: 22,
+                  height: 22,
+                  decoration: const BoxDecoration(
+                    color: Colors.blue,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Center(
+                    child: Text(
+                      count > 99 ? '99+' : count.toString(),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                );
+              }
+            }
+
+            if (count == 0) {
+              if (isGroup || wasLastMessageSentByMe) {
+                return _buildMessageStatus(isRead);
+              }
+              if (!wasLastMessageSentByMe) {
+                return SizedBox();
+              }
+
+              return _buildMessageStatus(false);
+            }
+
+            return _buildMessageStatus(false);
+
+            //Si el sender no soy yo, hacer todo, si si no hacer nada
+          });
     }
 
     String _formatTime(DateTime time) {
@@ -92,6 +142,10 @@ class ChatsMenuScreen extends ConsumerWidget {
       final int unreadCount =
           isGroup ? (recentGroup!.unreadCount ?? 0) : recentChat!.unreadCount;
 
+      final String lastMessageSenderId = isGroup
+          ? recentGroup!.senderId ?? ''
+          : recentChat!.lastMessageSenderId;
+
       return ListTile(
         leading: chatPic.isNotEmpty
             ? CircleAvatar(
@@ -132,10 +186,16 @@ class ChatsMenuScreen extends ConsumerWidget {
                 overflow: TextOverflow.ellipsis,
               ),
             ),
-            _buildMessageStatus(isRead, unreadCount),
+            //_buildMessageStatus(isRead, unreadCount),
+            _buildUnreadBadge(
+                isGroup: isGroup,
+                chatId: chatId,
+                isRead: isRead,
+                lastMessageSenderId: lastMessageSenderId),
           ],
         ),
         onTap: () {
+          ref.read(chatControllerProvider).resetUnreadCount(chatId, isGroup);
           Navigator.pushNamed(
             context,
             '/chat',
@@ -143,6 +203,7 @@ class ChatsMenuScreen extends ConsumerWidget {
               'name': chatName,
               'uid': chatId,
               'isGroup': isGroup,
+              'groupImage': chatPic
             },
           );
         },

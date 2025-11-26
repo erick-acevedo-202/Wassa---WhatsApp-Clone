@@ -56,42 +56,58 @@ class _ChatScreenState extends ConsumerState<ChatScreen>
     final String name = args['name'] ?? '';
     final String uid = args['uid'] ?? '';
     final bool isGroup = args['isGroup'] ?? false;
+    final String groupImage = args['groupImage'] ?? '';
 
     return Scaffold(
       appBar: AppBar(
-        title: isGroup
-            ? Container(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  name,
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-              )
-            : StreamBuilder(
-                stream: ref.read(authControllerProvider).streamUserData(uid),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Loader();
-                  }
-                  if (snapshot.hasError) {
-                    ErrorScreen(
-                      error: snapshot.error.toString(),
-                    );
-                  }
-                  if (snapshot.data == null) {
+        title: InkWell(
+          child: isGroup
+              ? Container(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    name,
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                )
+              : StreamBuilder(
+                  stream: ref.read(authControllerProvider).streamUserData(uid),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Loader();
+                    }
+                    if (snapshot.hasError) {
+                      ErrorScreen(
+                        error: snapshot.error.toString(),
+                      );
+                    }
+                    if (snapshot.data == null) {
+                      return ListTile(
+                        title: Text(name),
+                        subtitle: Text(""),
+                      );
+                    }
+
+                    final userData = snapshot.data!;
                     return ListTile(
                       title: Text(name),
-                      subtitle: Text(""),
+                      subtitle: Text(userData.isOnline ? "Online" : "Offline"),
                     );
-                  }
-
-                  final userData = snapshot.data!;
-                  return ListTile(
-                    title: Text(name),
-                    subtitle: Text(userData.isOnline ? "Online" : "Offline"),
-                  );
+                  },
+                ),
+          onTap: () {
+            if (isGroup) {
+              Navigator.pushNamed(
+                context,
+                '/group_details',
+                arguments: {
+                  'groupId': uid,
+                  'groupName': name,
+                  'groupImage': groupImage
                 },
-              ),
+              );
+            }
+          },
+        ),
         actions: [
           IconButton(
             onPressed: () async {

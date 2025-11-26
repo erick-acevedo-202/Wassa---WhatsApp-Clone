@@ -86,8 +86,25 @@ class ChatController {
     return chatRepository.getGroupChatStream(groupId);
   }
 
-  void setChatMessageSeen(
-      BuildContext context, String receiverUserId, String messageId) {
-    chatRepository.setChatMessageSeen(context, receiverUserId, messageId);
+  void setChatMessageSeen(BuildContext context, String receiverUserId,
+      String messageId, bool isGroup) {
+    chatRepository.setChatMessageSeen(
+        context, receiverUserId, messageId, isGroup);
+  }
+
+  Stream<int> getUnreadCountFromUser(String contactId) {
+    return chatRepository.getUnreadCountStreamFromUser(contactId);
+  }
+
+  Stream<int> getUnreadCountFromGroup(String groupId) {
+    return chatRepository.getUnreadCountStreamFromGroup(groupId);
+  }
+
+  void resetUnreadCount(String chatId, bool isGroup) {
+    if (isGroup) {
+      chatRepository.resetGroupUnreadCount(chatId);
+    } else {
+      chatRepository.resetUserUnreadCount(chatId);
+    }
   }
 }

@@ -6,8 +6,8 @@ class GroupDAO {
   final String groupPic;
   final List<String> membersUid;
   final DateTime timeSent;
-  bool? isRead;
-  int? unreadCount;
+  final bool isRead;
+  final int unreadCount;
   GroupDAO(
       {required this.senderId,
       required this.name,
@@ -16,8 +16,8 @@ class GroupDAO {
       required this.groupPic,
       required this.membersUid,
       required this.timeSent,
-      this.isRead,
-      this.unreadCount});
+      required this.isRead,
+      required this.unreadCount});
 
   Map<String, dynamic> toMap() {
     return {
@@ -28,6 +28,8 @@ class GroupDAO {
       'groupPic': groupPic,
       'membersUid': membersUid,
       'timeSent': timeSent.millisecondsSinceEpoch,
+      'isRead': isRead,
+      'unreadCount': unreadCount
     };
   }
 
@@ -40,6 +42,8 @@ class GroupDAO {
       groupPic: map['groupPic'] ?? '',
       membersUid: List<String>.from(map['membersUid']),
       timeSent: DateTime.fromMillisecondsSinceEpoch(map['timeSent']),
+      isRead: map['isRead'] ?? false,
+      unreadCount: map['unreadCount'] ?? 0,
     );
   }
 }

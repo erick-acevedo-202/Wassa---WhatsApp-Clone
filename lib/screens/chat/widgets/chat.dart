@@ -64,18 +64,31 @@ class _ChatState extends ConsumerState<Chat> {
             final messageData = snapshot.data![index];
             var timeSent = DateFormat.Hm().format(messageData.timeSent);
 
-            if (!messageData.isSeen &&
-                messageData.receiverId ==
-                    FirebaseAuth.instance.currentUser!.uid) {
-              ref.read(chatControllerProvider).setChatMessageSeen(
-                  context, widget.receiverUserId, messageData.messageId);
+            if (!messageData.isSeen) {
+              // Para grupos: cualquier mensaje no visto por cualquier usuario
+              // Para chats 1:1: solo mensajes donde el receptor es el usuario actual
+              if (widget.isGroup ||
+                  messageData.receiverId ==
+                      FirebaseAuth.instance.currentUser!.uid) {
+                ref.read(chatControllerProvider).setChatMessageSeen(
+                    context,
+                    widget.receiverUserId,
+                    messageData.messageId,
+                    widget.isGroup);
+
+                //Si veo los mensajes dentro del chat, resetear el contador, ya los vi
+                ref
+                    .read(chatControllerProvider)
+                    .resetUnreadCount(widget.receiverUserId, widget.isGroup);
+              }
             }
 
+            /*
             print("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
 
             print("SNAPSHOT LENGTH: ${snapshot.data!.length}");
             print("SNAPSHOT DATA: ${snapshot.data![index].text}");
-            print("SNAPSHOT TYPE: ${snapshot.data![index].type}");
+            print("SNAPSHOT TYPE: ${snapshot.data![index].type}");*/
             if (messageData.senderId ==
                 FirebaseAuth.instance.currentUser!.uid) {
               return MyMessageCard(

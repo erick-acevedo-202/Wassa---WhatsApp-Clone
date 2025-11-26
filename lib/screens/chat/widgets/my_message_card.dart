@@ -27,8 +27,6 @@ class MyMessageCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isReplying = false; //repliedText.isNotEmpty;
-
     return SwipeTo(
         onLeftSwipe: onLeftSwipe,
         child: Align(
@@ -59,58 +57,6 @@ class MyMessageCard extends StatelessWidget {
                             )
                           : DisplayAsset(message: message, type: type),
                     ),
-                    /*Padding(
-                  padding: type == MessageEnum.text
-                      ? const EdgeInsets.only(
-                          left: 10,
-                          right: 30,
-                          top: 5,
-                          bottom: 20,
-                        )
-                      : const EdgeInsets.only(
-                          left: 5,
-                          top: 5,
-                          right: 5,
-                          bottom: 25,
-                        ),
-                  child: Column(
-                    children: [
-                      /*if (isReplying) ...[
-                        Text(
-                          username,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 3),
-                        Container(
-                          padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            color:
-                                Theme.of(context).brightness == Brightness.dark
-                                    ? Colors.grey[800]!.withValues(alpha: 0.5)
-                                    : Colors.grey[300]!.withValues(alpha: 0.5),
-                            borderRadius: const BorderRadius.all(
-                              Radius.circular(
-                                5,
-                              ),
-                            ),
-                          ),*/
-                          /*child: DisplayTextImageGIF(
-                            message: repliedText,
-                            type: repliedMessageType,
-                          ),*/
-                        ),
-                        const SizedBox(height: 8),
-                      ],
-                      /*DisplayTextImageGIF(
-                        message: message,
-                        type: type,
-                      ),*/
-                    ],
-                  ),
-                ),*/
-
                     Positioned(
                       bottom: 4,
                       right: 10,

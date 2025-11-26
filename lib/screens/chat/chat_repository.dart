@@ -36,40 +36,124 @@ class ChatRepository {
       DateTime timeSent,
       String receiverUserId,
       bool isGroup) async {
-    var receiverRecentChat = RecentChatModel(
+    if (isGroup) {
+      await firestore.collection('groups').doc(receiverUserId).update({
+        'lastMessage': text,
+        'timeSent': timeSent.millisecondsSinceEpoch,
+        'senderId': auth.currentUser!.uid,
+        'isRead': false,
+        'unreadCount': FieldValue.increment(1),
+      });
+    } else {
+      var receiverRecentChat = RecentChatModel(
         name: senderUser.name,
         profilePic: senderUser.profilePic,
         contactId: senderUser.uid,
         timeSent: timeSent,
-        lastMessage: text);
+        lastMessage: text,
+        lastMessageSenderId: senderUser.uid,
+        isRead: false,
+        unreadCount: 0,
+      );
 
-    if (isGroup) {
-      await firestore.collection('groups').doc(receiverUserId).update({
-        'lastMessage': text,
-        'timeSent': DateTime.now().millisecondsSinceEpoch,
-      });
-    } else {
       await firestore
           .collection('users')
           .doc(receiverUserId)
           .collection('chats')
           .doc(auth.currentUser!.uid)
-          .set(receiverRecentChat.toMap());
+          .set({
+        ...receiverRecentChat.toMap(),
+        'isRead': false,
+        'unreadCount': FieldValue.increment(1),
+      }, SetOptions(merge: true)); // merge para no sobrescribir
 
       var senderRecentChat = RecentChatModel(
-          name: receiverUser!.name,
-          profilePic: receiverUser.profilePic,
-          contactId: receiverUser.uid,
-          timeSent: timeSent,
-          lastMessage: text);
+        name: receiverUser!.name,
+        profilePic: receiverUser.profilePic,
+        contactId: receiverUser.uid,
+        timeSent: timeSent,
+        lastMessage: text,
+        lastMessageSenderId: senderUser.uid,
+        isRead: false,
+        unreadCount: 0,
+      );
 
       await firestore
           .collection('users')
           .doc(auth.currentUser!.uid)
           .collection('chats')
           .doc(receiverUserId)
-          .set(senderRecentChat.toMap());
+          .set(senderRecentChat.toMap(), SetOptions(merge: true));
     }
+  }
+
+  // Para grupos
+  Stream<int> getUnreadCountStreamFromGroup(String groupId) {
+    print("Getting unread count for group: $groupId");
+    return firestore
+        .collection('groups')
+        .doc(groupId)
+        .snapshots()
+        .map((snapshot) {
+      if (!snapshot.exists) {
+        print("Group document does not exist: $groupId");
+        return 0;
+      }
+      final data = snapshot.data() as Map<String, dynamic>?;
+      final count = data?['unreadCount'] ?? 0;
+      print("Group unread count: $count");
+      return count;
+    });
+  }
+
+// Para usuarios
+  Stream<int> getUnreadCountStreamFromUser(String contactId) {
+    print("Getting unread count for user: $contactId");
+    return firestore
+        .collection('users')
+        .doc(auth.currentUser!.uid)
+        .collection('chats')
+        .doc(contactId)
+        .snapshots()
+        .map((snapshot) {
+      if (!snapshot.exists) {
+        print("User chat document does not exist: $contactId");
+        return 0;
+      }
+      final data = snapshot.data() as Map<String, dynamic>?;
+      final count = data?['unreadCount'] ?? 0;
+      print("User unread count: $count");
+      return count;
+    });
+  }
+
+  void resetGroupUnreadCount(String groupId) async {
+    await firestore.collection('groups').doc(groupId).update({
+      'isRead': true,
+      'unreadCount': 0,
+    });
+  }
+
+  void resetUserUnreadCount(String contactId) async {
+    await firestore
+        .collection('users')
+        .doc(auth.currentUser!.uid)
+        .collection('chats')
+        .doc(contactId)
+        .update({
+      'isRead': true,
+      'unreadCount': 0,
+    });
+
+    await firestore
+        .collection('users')
+        .doc(contactId)
+        .collection('chats')
+        .doc(auth.currentUser!.uid)
+        .update({
+      'isRead': true,
+      'unreadCount': 0,
+    });
   }
 
   void _saveMessage(
@@ -97,6 +181,14 @@ class ChatRepository {
           .collection('chats')
           .doc(messageId)
           .set(message.toMap());
+
+      /*// Incrementar contador para el grupo (solo si el mensaje no es del usuario actual)
+      if (auth.currentUser!.uid != receiverUserId) {
+        await firestore.collection('groups').doc(receiverUserId).update({
+          'isRead': false,
+          'unreadCount': FieldValue.increment(1),
+        });
+      }*/
     } else {
       await firestore
           .collection('users')
@@ -115,6 +207,20 @@ class ChatRepository {
           .collection('messages')
           .doc(messageId)
           .set(message.toMap());
+
+      /*
+      // Para chats individuales - incrementar contador en el receptor
+      if (auth.currentUser!.uid != receiverUserId) {
+        await firestore
+            .collection('users')
+            .doc(receiverUserId)
+            .collection('chats')
+            .doc(auth.currentUser!.uid)
+            .update({
+          'isRead': false,
+          'unreadCount': FieldValue.increment(1),
+        });
+      }*/
     }
   }
 
@@ -242,6 +348,7 @@ class ChatRepository {
               contactId: chatContact.contactId,
               timeSent: chatContact.timeSent,
               lastMessage: chatContact.lastMessage,
+              lastMessageSenderId: chatContact.lastMessageSenderId,
               isRead: chatContact.isRead,
               unreadCount: chatContact.unreadCount),
         );
@@ -355,29 +462,39 @@ class ChatRepository {
     }
   }
 
-  void setChatMessageSeen(
-    BuildContext context,
-    String receiverUserId,
-    String messageId,
-  ) async {
+  void setChatMessageSeen(BuildContext context, String receiverUserId,
+      String messageId, bool isGroup) async {
     try {
-      await firestore
-          .collection('users')
-          .doc(auth.currentUser!.uid)
-          .collection('chats')
-          .doc(receiverUserId)
-          .collection('messages')
-          .doc(messageId)
-          .update({'isSeen': true});
+      if (isGroup) {
+        // Para grupos: actualizar en la colección de grupos
 
-      await firestore
-          .collection('users')
-          .doc(receiverUserId)
-          .collection('chats')
-          .doc(auth.currentUser!.uid)
-          .collection('messages')
-          .doc(messageId)
-          .update({'isSeen': true});
+        await firestore
+            .collection('groups')
+            .doc(receiverUserId)
+            .collection('chats')
+            .doc(messageId)
+            .update({'isSeen': true});
+      } else {
+        // Para chats individuales
+
+        await firestore
+            .collection('users')
+            .doc(auth.currentUser!.uid)
+            .collection('chats')
+            .doc(receiverUserId)
+            .collection('messages')
+            .doc(messageId)
+            .update({'isSeen': true});
+
+        await firestore
+            .collection('users')
+            .doc(receiverUserId)
+            .collection('chats')
+            .doc(auth.currentUser!.uid)
+            .collection('messages')
+            .doc(messageId)
+            .update({'isSeen': true});
+      }
     } catch (e) {
       showSnackBar(context: context, content: e.toString());
     }
