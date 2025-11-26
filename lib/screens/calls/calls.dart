@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -144,7 +145,6 @@ class _MeetingPageState extends State<MeetingPage>
         peersMap.remove(peer.peerId);
         videoTracks.remove(peer.peerId);
       } else {
-        // para otros updates simplemente actualiza la referencia
         peersMap[peer.peerId] = peer;
       }
     });
@@ -157,7 +157,7 @@ class _MeetingPageState extends State<MeetingPage>
   }) {
     setState(() {
       for (var p in addedPeers) {
-        peersMap[p.peerId] = p; // upsert - evita duplicados
+        peersMap[p.peerId] = p;
         videoTracks[p.peerId] = p.videoTrack;
       }
       for (var p in removedPeers) {
@@ -184,8 +184,9 @@ class _MeetingPageState extends State<MeetingPage>
   }
 
   Widget peerTile(Key key, HMSVideoTrack? videoTrack, HMSPeer peer) {
-    final initial =
-        (peer.name != null && peer.name.trim().isNotEmpty) ? peer.name : 'U';
+    final initial = (peer.name != null && peer.name.trim().isNotEmpty)
+        ? peer.name.substring(0, 1).toUpperCase()
+        : 'U';
 
     return Container(
       key: key,
@@ -210,21 +211,15 @@ class _MeetingPageState extends State<MeetingPage>
 
   @override
   Widget build(BuildContext context) {
-    int count = peersMap.length;
+    int count = peersMap.length > 0 ? peersMap.length : 1;
 
     int crossAxis;
-    double mainHeight;
+    crossAxis = sqrt(count).ceil();
+    int filas = (count / crossAxis).ceil();
 
-    if (count == 1) {
-      crossAxis = 1;
-      mainHeight = MediaQuery.of(context).size.height; // pantalla completa
-    } else if (count == 2) {
-      crossAxis = 1;
-      mainHeight = MediaQuery.of(context).size.height / 2; // mitad y mitad
-    } else {
-      crossAxis = 2; // grid normal
-      mainHeight = MediaQuery.of(context).size.height / 2.5;
-    }
+    double mainHeight =
+        MediaQuery.of(context).size.height / (1 + (filas - 1) * 1.5);
+
     return WillPopScope(
       onWillPop: () async {
         hmsSDK.leave();
@@ -245,6 +240,13 @@ class _MeetingPageState extends State<MeetingPage>
                       mainAxisExtent: mainHeight,
                     ),
                     itemBuilder: (context, index) {
+                      if (count == 0 || peersMap.isEmpty) {
+                        return Container(
+                          height: MediaQuery.of(context).size.height,
+                          alignment: Alignment.center,
+                          child: CircularProgressIndicator(),
+                        );
+                      }
                       final peer = peersMap.values.toList()[index];
                       final track = videoTracks[peer.peerId];
                       return peerTile(

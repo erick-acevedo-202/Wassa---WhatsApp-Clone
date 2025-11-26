@@ -130,10 +130,8 @@ class _StatesSeeScreenState extends State<StatesSeeScreen> {
     final message = widget.state.message;
 
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text("Vista previa"),
-        backgroundColor: Colors.black87,
+        title: Text("estado"),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),

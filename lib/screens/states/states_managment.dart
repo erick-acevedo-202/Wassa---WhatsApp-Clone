@@ -91,7 +91,6 @@ class StatesManagment {
         ...doc.data(),
         'id': doc.id,
       };
-      print(data);
       return StateDAO.fromMap(data);
     }).toList();
   }
@@ -123,7 +122,7 @@ class StatesManagment {
 
       final now = DateTime.now().toIso8601String();
 
-      // 1. obtener estados (solo una query)
+      // obtener estados (solo una query)
       final query = await firebase_firestore
           .collection('states')
           .where('expiration', isGreaterThan: now)
@@ -137,11 +136,11 @@ class StatesManagment {
         });
       }).toList();
 
-      // 2. filtrar por chats del usuario
+      // filtrar por chats del usuario
       final myStates =
           allStates.where((state) => uids.contains(state.uid)).toList();
 
-      // 3. cargar la información del usuario para cada state
+      // cargar la información del usuario para cada state
       final withUser = await Future.wait(
         myStates.map((state) async {
           final snap =

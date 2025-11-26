@@ -18,7 +18,7 @@ class _StatesMenuScreenState extends ConsumerState<StatesMenuScreen> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: false,
-        title: Text('Historias'),
+        title: Text('Estados'),
       ),
       body: SafeArea(
         child: Column(
@@ -44,7 +44,7 @@ class _StatesMenuScreenState extends ConsumerState<StatesMenuScreen> {
                 ),
               ),
             ),
-            Text('Historias de los demas'),
+            Text('Estados de los demás'),
             StreamBuilder<List<StateDAO>>(
               stream:
                   ref.watch(stateControllerProvider).getStatesForChatContacts(),
@@ -68,8 +68,7 @@ class _StatesMenuScreenState extends ConsumerState<StatesMenuScreen> {
                     itemCount: states.length,
                     itemBuilder: (context, index) {
                       final state = states[index];
-                      final user =
-                          state.user; // viene desde el método que hicimos
+                      final user = state.user;
 
                       return ListTile(
                         onTap: () {
