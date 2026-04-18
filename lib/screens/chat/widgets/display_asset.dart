@@ -17,9 +17,7 @@ class DisplayAsset extends StatelessWidget {
   Widget build(BuildContext context) {
     bool isPlaying = false;
     final AudioPlayer audioPlayer = AudioPlayer();
-
     print("Current TYPE ${type}");
-
     return type == MessageEnum.text
         ? Text(
             message,

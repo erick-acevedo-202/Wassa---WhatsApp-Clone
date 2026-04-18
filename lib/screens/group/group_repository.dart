@@ -82,14 +82,11 @@ class GroupRepository {
       if (!groupDoc.exists) {
         throw Exception("El grupo no existe");
       }
-
       final groupData = groupDoc.data()!;
       final List<String> memberUids =
           List<String>.from(groupData['membersUid'] ?? []);
-
       // Si no hay miembros, devolver lista vacía
       if (memberUids.isEmpty) return [];
-
       //Obtener todos los usuarios
       final List<Future<UserDAO>> futures = memberUids.map((uid) async {
         final userDoc = await firestore.collection('users').doc(uid).get();
@@ -112,7 +109,6 @@ class GroupRepository {
           );
         }
       }).toList();
-
       //Esperar resultados
       return await Future.wait(futures);
     } catch (e) {
